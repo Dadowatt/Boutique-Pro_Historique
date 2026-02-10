@@ -38,6 +38,7 @@ def afficher_categorie():
         resultats = curseur.fetchall()
         if resultats:
             print("\nListe des catégories :")
+            print(f"-"*30)
             for c in resultats:
                 print(f"ID: {c['id']} | Nom: {c['nom_categorie']}")
         else:
@@ -102,13 +103,13 @@ def lister_produits():
         produits = curseur.fetchall()
         if produits:
             print("\nListe des produits :")
+            print(f"-"*75)
             for p in produits:
                 print(f"ID: {p['id']} | Nom: {p['designation']} | Prix: {p['prix']} | Stock: {p['stock']} | Catégorie: {p['nom_categorie']}")
         else:
             print("Aucun produit trouvé.")
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
-
 
 #gestion des mouvements
 def ajouter_mouvement():
@@ -180,6 +181,7 @@ def alerte_stock():
         produits = curseur.fetchall()
         if produits:
             print("\n Produits avec stock inférieur à 5 :")
+            print(f"-"*60)
             for p in produits:
                 print(f"ID: {p['id']} | Nom: {p['designation']} | Stock: {p['stock']} | Catégorie: {p['nom_categorie']}")
         else:
@@ -195,9 +197,10 @@ while True:
     print("2. Lister les catégories")
     print("3. Ajouter un produit")
     print("4. Lister les produits")
-    print("5. Ajouter / Retirer stock")
+    print("5. Ajouter ou Retirer stock")
     print("6. Produits avec stock < 5")
     print("0. Quitter")
+    
     choix = input("Saisir votre choix : ")
 
     if choix == "1":
