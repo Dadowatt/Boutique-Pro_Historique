@@ -217,7 +217,7 @@ def inscription():
         return False
 
 #fonction pour l'authentification
-def authentification():
+def connexions():
     try:
         print("\n=== Connexion ===")
         email = input("Entrer votre email : ").strip()
@@ -242,27 +242,29 @@ def authentification():
         return False
 
 
-#Verification de la connection
-connecte = False
+def authentification():
+    while True:
+        print("\n=== Authentification ===")
+        print("1. Se connecter")
+        print("2. S'inscrire")
+        print("0. Quitter")
+        choix = input("Choisissez une option : ")
 
-while not connecte:
-    print("\n=== Bienvenue Boutique-Pro ===")
-    print("1. S'inscrire")
-    print("2. Se connecter")
-    print("0. Quittez")
-    choix = input("Choisissez une option : ")
-
-    if choix == "1":
-        inscription()
-    elif choix == "2":
-        connecte = authentification()
-    elif choix == "0":
-        print("Au revoir !")
-        exit()
-    else:
-        print("Choix invalide")
+        if choix == "1":
+            if connexions():
+                return True
+        elif choix == "2":
+            inscription()
+        elif choix == "0":
+            print("Au revoir !")
+            exit()
+        else:
+            print("Choix invalide")
 
 
+
+
+authentification()
 # Menu principal
 while True:
     print("\n=== Menu Boutique-Pro & Historique ===")
