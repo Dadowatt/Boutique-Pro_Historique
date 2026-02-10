@@ -193,17 +193,20 @@ def alerte_stock():
 def inscription():
     try:
         print("\n=== Inscription ===")
-        email = input("Entrer votreEmail : ").strip()
+        email = input("Entrer votre Email : ").strip()
 
         # Vérifier si l'email existe déjà
-        sql = "SELECT * FROM utilisateurs WHERE email=%s"
-        curseur.execute(sql, (email,))
+        sql = """
+            INSERT INTO utilisateurs (email, mot_de_passe, role)
+            VALUES (%s, %s, 'utilisateur')
+        """
+        curseur.execute(sql, (email, mot_de_passe))
 
         if curseur.fetchone():
             print("Cet email est déjà utilisé")
             return False
 
-        mot_de_passe = input("Mot de passe : ").strip()
+        mot_de_passe = input("Entrer votre Mot de passe : ").strip()
 
         # Ajouter l'utilisateur 
         sql = "INSERT INTO utilisateurs (email, mot_de_passe) VALUES (%s, %s)"
@@ -224,22 +227,24 @@ def connexions():
         mot_de_passe = input("Entrer votre mot de passe : ").strip()
 
         sql = """
-            SELECT * FROM utilisateurs
+            SELECT id, email, role
+            FROM utilisateurs
             WHERE email = %s AND mot_de_passe = %s
         """
         curseur.execute(sql, (email, mot_de_passe))
         utilisateur = curseur.fetchone()
 
         if utilisateur:
-            print("Connexion réussie")
-            return True
+            print(f"Connexion réussie (rôle : {utilisateur[2]})")
+            return utilisateur 
         else:
             print("Email ou mot de passe incorrect")
-            return False
+            return None
 
     except Exception as e:
         print(f"Erreur MySQL : {e}")
-        return False
+        return None
+
 
 
 def authentification():
