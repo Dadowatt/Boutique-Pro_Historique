@@ -189,6 +189,33 @@ def alerte_stock():
         print(f"Erreur MySQL : {e}")
 
 
+#fonction inscription
+def inscription():
+    try:
+        print("\n=== Inscription ===")
+        email = input("Entrer votreEmail : ").strip()
+
+        # Vérifier si l'email existe déjà
+        sql = "SELECT * FROM utilisateurs WHERE email=%s"
+        curseur.execute(sql, (email,))
+
+        if curseur.fetchone():
+            print("Cet email est déjà utilisé")
+            return False
+
+        mot_de_passe = input("Mot de passe : ").strip()
+
+        # Ajouter l'utilisateur 
+        sql = "INSERT INTO utilisateurs (email, mot_de_passe) VALUES (%s, %s)"
+        curseur.execute(sql, (email, mot_de_passe))
+        connexion.commit()
+        print("Inscription réussie Vous pouvez maintenant vous connecter.")
+        return True
+
+    except Exception as e:
+        print(f"Erreur MySQL : {e}")
+        return False
+
 #fonction pour l'authentification
 def authentification():
     try:
@@ -213,6 +240,7 @@ def authentification():
     except Exception as e:
         print(f"Erreur MySQL : {e}")
         return False
+
 
 
 # Menu principal
