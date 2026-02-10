@@ -55,10 +55,13 @@ def afficher_categorie():
 def ajouter_produit():
     try:
         while True:
-            designation = input("Saisir le nom du produit : ").strip()
-            if designation.replace(" ", "").isalpha():
-                break
-        print("Le nom doit contenir uniquement des lettres")
+            try:
+                designation = input("Saisir le nom du produit : ").strip()
+                if designation.replace(" ", "").isalpha():
+                    break
+                print("Le nom doit contenir uniquement des lettres")
+            except ValueError:
+                print("Veuillez entrer uniquement des lettres")
 
         while True:
             try:
