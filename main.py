@@ -15,24 +15,18 @@ print("Connecté à la base de donnée MySQL")
 def ajouter_categorie():
     try:
         while True:
-            try:
-                nom_categorie = input("Nom de la catégorie à ajouter : ").lower().strip()
-                if nom_categorie.replace(" ", "").isalpha():
-                    break
-                print("Le nom de la catégorie doit contenir uniquement des lettres")
-            except ValueError:
-                print("Veuillez entrer uniquement des lettres")
+            nom_categorie = input("Nom de la catégorie à ajouter : ").lower().strip()
+            if nom_categorie.replace(" ", "").isalpha():
+                break
+            print("Le nom de la catégorie doit contenir uniquement des lettres")
 
         sql = "INSERT INTO categories (nom_categorie) VALUES(%s)"
         curseur.execute(sql, (nom_categorie,))
         connexion.commit()
-        print("Catégorie ajoutée avec succès !")
+        print(f"Catégorie {nom_categorie} ajoutée avec succès !")
 
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
-    except Exception as e:
-        print(f"Erreur inattendue : {e}")
-
 
 def afficher_categorie():
     try:
@@ -48,8 +42,6 @@ def afficher_categorie():
             print("Aucune catégorie trouvée.")
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
-    except Exception as e:
-        print(f"Erreur inattendue : {e}")
 
 #gestion des produits
 def ajouter_produit():
@@ -61,7 +53,7 @@ def ajouter_produit():
                     break
                 print("Le nom doit contenir uniquement des lettres")
             except ValueError:
-                print("Veuillez entrer uniquement des lettres")
+                print("Veuillez un nom de produit valide")
 
         while True:
             try:
@@ -119,8 +111,6 @@ def ajouter_produit():
         print(f"Erreur MySQL : {e}")
     except ValueError:
         print("Erreur : le prix et le stock doivent être des nombres.")
-    except Exception as e:
-        print(f"Erreur inattendue : {e}")
 
 
 def lister_produits():
@@ -149,21 +139,47 @@ def ajouter_mouvement():
         sql_produits = "SELECT * FROM produits"
         curseur.execute(sql_produits)
         produits = curseur.fetchall()
+        if not produits:
+            print("Aucun produit disponible")
+            return
         for p in produits:
             print(f"ID: {p['id']} | Nom: {p['designation']} | Stock: {p['stock']}")
-        id_produit = int(input("Choisis l'ID du produit : "))
+        
+        while True:
+            try:
+                id_produit = int(input("Choisis l'ID du produit : "))
+                if any(p['id'] == id_produit for p in produits):
+                    break
+                print("ID produit inexistant, veuillez ressayer")
+            except ValueError:
+                print("Veuillez saisir un nombre entier valide pour l'ID")
+                
 
-        # Demander la quantité et le type
-        quantite = int(input("Quantité à ajouter/retirer : "))
-        type_mouvement = input("Type de mouvement (ENTREE/SORTIE) : ").upper()
-        if type_mouvement not in ["ENTREE", "SORTIE"]:
-            print("Type de mouvement invalide !")
-            return
+        while True:
+            try:
+                quantite = int(input("Quantité à ajouter/retirer : "))
+                if quantite > 0:
+                    break
+                else:
+                    print("La quantité doit être positive")
+            except ValueError:
+                print("Veuillez saisir un nombre entier valide pour la quantité")
+        
+        while True:
+            type_mouvement = input("Type de mouvement (ENTREE/SORTIE) : ").upper()
+            if type_mouvement in ["ENTREE", "SORTIE"]:
+                break
+            print("Type de mouvement invalide ! veuillez ressayer")
+                
 
         # Récupérer le stock actuel
         sql_stock = "SELECT stock FROM produits WHERE id=%s"
         curseur.execute(sql_stock, (id_produit,))
         ligne = curseur.fetchone()
+        if ligne is None:
+            print("Produit introuvable")
+            return
+        
         stock_actuel = ligne["stock"]
 
         # Calculer le nouveau stock
@@ -177,9 +193,10 @@ def ajouter_mouvement():
             return
 
         # Mettre à jour le stock
-        sql_update_stock = "UPDATE produits SET stock=%s WHERE id=%s"
-        curseur.execute(sql_update_stock, (nouveau_stock, id_produit))
+        update_stock = "UPDATE produits SET stock=%s WHERE id=%s"
+        curseur.execute(update_stock, (nouveau_stock, id_produit))
         connexion.commit()
+        print(f"Mouvement effectué. Nouveau stock pour le produit {id_produit} : {nouveau_stock}")
 
         # Ajouter le mouvement dans la table mouvements
         sql_mouvement = """
@@ -193,10 +210,6 @@ def ajouter_mouvement():
 
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
-    except ValueError:
-        print("Erreur : l'ID et la quantité doivent être des nombres.")
-    except Exception as e:
-        print(f"Erreur inattendue : {e}")
 
 #Alerte stock faible
 def alerte_stock():
