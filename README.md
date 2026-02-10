@@ -55,3 +55,11 @@ Elle permet de connaître le stock actuel, d’éviter les pertes ou vols, et de
 2. Créer la base de données boutique_pro_historique et les tables categories, produits, mouvements  
 3. Installer la dépendance :  
    pip install mysql-connector-python
+
+## Note important
+### Configuration du port MySQL
+
+Le port utilisé dans le code est `3307` car c’est celui configuré sur ma machine.
+Selon votre installation, MySQL utilise souvent `3306`.
+Si la connexion échoue, modifiez simplement la valeur du port dans le fichier Python pour mettre celui de votre environnement.
+

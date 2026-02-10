@@ -15,7 +15,7 @@ print("Connecté à la base de donnée MySQL")
 def ajouter_categorie():
     try:
         while True:
-            nom_categorie = input("Nom de la catégorie : ").lower().strip()
+            nom_categorie = input("Nom de la catégorie à ajouter : ").lower().strip()
             if nom_categorie.replace(" ", "").isalpha():
                 break
             print("Le nom de la catégorie doit contenir uniquement des lettres")
@@ -51,17 +51,42 @@ def afficher_categorie():
 #gestion des produits
 def ajouter_produit():
     try:
-        designation = input("Nom du produit : ").strip()
-        prix = float(input("Prix du produit : "))
-        stock = int(input("Stock initial : "))
+        while True:
+            designation = input("Saisir le nom du produit : ").strip()
+            if designation.replace(" ", "").isalpha():
+                break
+        print("Le nom doit contenir uniquement des lettres")
+
+        while True:
+            try:
+                prix = float(input("Saisir le prix du produit : "))
+                if prix >= 0:
+                    break
+                print("Le prix doit être positif")
+            except ValueError:
+                print("Veuillez entrer un nombre valide")
+        while True:
+            try:
+                stock = int(input("Saisir le stock initial : "))
+                if stock >= 0:
+                    break
+                print("Le stock doit être positif")
+            except ValueError:
+                print("Veuillez entrer un nombre entier")
 
         # Afficher les catégories
         sql_cat = "SELECT * FROM categories"
         curseur.execute(sql_cat)
         categories = curseur.fetchall()
+
+        if not categories:
+            print("Aucune catégorie disponible. veuillez ajouter d'abord une catégorie")
+            return
+        print("\nListe des catégories :")
         for c in categories:
             print(f"ID: {c['id']} | Nom: {c['nom_categorie']}")
-        categorie_id = int(input("Choisis l'ID de la catégorie : "))
+
+        categorie_id = int(input("Choisis l'ID de la catégorie du produit : "))
 
         # Ajout du produit
         sql_produit = """
