@@ -196,8 +196,8 @@ def inscription():
         email = input("Entrer votre Email : ").strip()
 
         # Vérifier si l'email existe déjà
-        sql_verif = "SELECT id FROM utilisateurs WHERE email = %s"
-        curseur.execute(sql_verif, (email,))
+        sql = "SELECT id FROM utilisateurs WHERE email = %s"
+        curseur.execute(sql, (email,))
         if curseur.fetchone():
             print("Cet email est déjà utilisé")
             return False
@@ -214,7 +214,7 @@ def inscription():
         print("Inscription réussie")
         return True
 
-    except mysql.connector.Error as e:
+    except Exception as e:
         print(f"Erreur MySQL : {e}")
         return False
 
@@ -241,7 +241,7 @@ def connexions():
             print("Email ou mot de passe incorrect")
             return None
 
-    except mysql.connector.Error as e:
+    except Exception as e:
         print(f"Erreur MySQL : {e}")
         return None
 
