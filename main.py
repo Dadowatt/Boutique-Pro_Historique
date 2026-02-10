@@ -256,8 +256,9 @@ def authentification():
         choix = input("Choisissez une option : ")
 
         if choix == "1":
-            if connexions():
-                return True
+            utilisateur = connexions()
+            if utilisateur:
+                return utilisateur
         elif choix == "2":
             inscription()
         elif choix == "0":
@@ -265,6 +266,7 @@ def authentification():
             exit()
         else:
             print("Choix invalide")
+
 
 
 
