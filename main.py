@@ -15,10 +15,13 @@ print("Connecté à la base de donnée MySQL")
 def ajouter_categorie():
     try:
         while True:
-            nom_categorie = input("Nom de la catégorie à ajouter : ").lower().strip()
-            if nom_categorie.replace(" ", "").isalpha():
-                break
-            print("Le nom de la catégorie doit contenir uniquement des lettres")
+            try:
+                nom_categorie = input("Nom de la catégorie à ajouter : ").lower().strip()
+                if nom_categorie.replace(" ", "").isalpha():
+                    break
+                print("Le nom de la catégorie doit contenir uniquement des lettres")
+            except ValueError:
+                print("Veuillez entrer uniquement des lettres")
 
         sql = "INSERT INTO categories (nom_categorie) VALUES(%s)"
         curseur.execute(sql, (nom_categorie,))
