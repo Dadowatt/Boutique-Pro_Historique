@@ -167,7 +167,6 @@ def ajouter_mouvement():
     except Exception as e:
         print(f"Erreur inattendue : {e}")
 
-
 #Alerte stock faible
 def alerte_stock():
     try:
