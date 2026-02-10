@@ -242,6 +242,26 @@ def authentification():
         return False
 
 
+#Verification de la connection
+connecte = False
+
+while not connecte:
+    print("\n=== Bienvenue Boutique-Pro ===")
+    print("1. S'inscrire")
+    print("2. Se connecter")
+    print("0. Quittez")
+    choix = input("Choisissez une option : ")
+
+    if choix == "1":
+        inscription()
+    elif choix == "2":
+        connecte = authentification()
+    elif choix == "0":
+        print("Au revoir !")
+        exit()
+    else:
+        print("Choix invalide")
+
 
 # Menu principal
 while True:
