@@ -4,9 +4,9 @@ import mysql.connector
 connexion = mysql.connector.connect(
     host='localhost',
     user='root',
-    password='watt123',
+    password='tresbienmerci',
     database='boutique_pro_historique',
-    port=3307
+    # port=3307
 )
 curseur = connexion.cursor(dictionary=True)
 print("Connecté à la base de donnée MySQL")
@@ -187,6 +187,32 @@ def alerte_stock():
             print("Tous les produits ont un stock suffisant.")
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
+
+
+#fonction pour l'authentification
+def authentification():
+    try:
+        print("\n=== Connexion ===")
+        email = input("Entrer votre email : ").strip()
+        mot_de_passe = input("Entrer votre mot de passe : ").strip()
+
+        sql = """
+            SELECT * FROM utilisateurs
+            WHERE email = %s AND mot_de_passe = %s
+        """
+        curseur.execute(sql, (email, mot_de_passe))
+        utilisateur = curseur.fetchone()
+
+        if utilisateur:
+            print("Connexion réussie")
+            return True
+        else:
+            print("Email ou mot de passe incorrect")
+            return False
+
+    except Exception as e:
+        print(f"Erreur MySQL : {e}")
+        return False
 
 
 # Menu principal
