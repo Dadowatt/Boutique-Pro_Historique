@@ -297,6 +297,7 @@ while True:
         print("5. Ajouter ou Retirer stock")
 
     print("6. Produits avec stock < 5")
+    print("7. Se deconnecter")
     print("0. Quitter")
 
     choix = input("Saisir votre choix : ")
@@ -313,6 +314,9 @@ while True:
         ajouter_mouvement()
     elif choix == "6":
         alerte_stock()
+    elif choix == "7":
+        print("Déconnexion")
+        authentification()
     elif choix == "0":
         print("Déconnexion")
         break
