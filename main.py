@@ -1,4 +1,5 @@
 import mysql.connector
+import hashlib
 
 # Connexion à la base de données
 connexion = mysql.connector.connect(
@@ -188,6 +189,10 @@ def alerte_stock():
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
 
+#Fonction pour hasher mes mot de passe
+def hasher_mot_de_passe(mot_de_passe):
+    return hashlib.sha256(mot_de_passe.encode()).hexdigest()
+
 
 #fonction inscription
 def inscription():
@@ -204,11 +209,14 @@ def inscription():
 
         mot_de_passe = input("Entrer votre Mot de passe : ").strip()
 
+        # Hashage du mot de passe
+        mot_de_passe_hash = hasher_mot_de_passe(mot_de_passe)
+
         sql = """
             INSERT INTO utilisateurs (email, mot_de_passe, role)
             VALUES (%s, %s, 'utilisateur')
         """
-        curseur.execute(sql, (email, mot_de_passe))
+        curseur.execute(sql, (email, mot_de_passe_hash))
         connexion.commit()
 
         print("Inscription réussie")
@@ -226,12 +234,14 @@ def connexions():
         email = input("Entrer votre email : ").strip()
         mot_de_passe = input("Entrer votre mot de passe : ").strip()
 
+        mot_de_passe_hash = hasher_mot_de_passe(mot_de_passe)
+
         sql = """
             SELECT id, email, role
             FROM utilisateurs
             WHERE email = %s AND mot_de_passe = %s
         """
-        curseur.execute(sql, (email, mot_de_passe))
+        curseur.execute(sql, (email, mot_de_passe_hash))
         utilisateur = curseur.fetchone()
 
         if utilisateur:
