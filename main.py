@@ -258,7 +258,7 @@ def connexions():
 
 
 
-
+#fonction pour s'authentifier
 def authentification():
     while True:
         print("\n=== Authentification ===")
@@ -281,10 +281,10 @@ def authentification():
 
 
 
-
-
+#on recupere l'utilisateur et verifie son role 
 utilisateur_connecte = authentification()
 role = utilisateur_connecte["role"]
+
 
 # Menu principal
 while True:
@@ -317,9 +317,10 @@ while True:
         alerte_stock()
     elif choix == "7":
         print("Déconnexion")
-        authentification()
+        utilisateur_connecte = authentification()
+        role = utilisateur_connecte["role"]
     elif choix == "0":
-        print("Déconnexion")
+        print("Au revoir")
         break
     else:
         print("Accès refusé ou choix invalide")
