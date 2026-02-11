@@ -114,7 +114,6 @@ def ajouter_produit():
     except ValueError:
         print("Erreur : le prix et le stock doivent être des nombres.")
 
-
 def lister_produits():
     try:
         sql = """
@@ -137,7 +136,6 @@ def lister_produits():
 #gestion des mouvements
 def ajouter_mouvement():
     try:
-        # Afficher les produits
         sql_produits = "SELECT * FROM produits"
         curseur.execute(sql_produits)
         produits = curseur.fetchall()
@@ -179,7 +177,6 @@ def ajouter_mouvement():
         if ligne is None:
             print("Produit introuvable")
             return
-        
         stock_actuel = ligne["stock"]
 
         # Calculer le nouveau stock
@@ -207,7 +204,7 @@ def ajouter_mouvement():
         connexion.commit()
 
         print(f"Mouvement {type_mouvement} enregistré avec succès !")
-
+        
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
 

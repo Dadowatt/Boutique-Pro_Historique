@@ -56,6 +56,32 @@ Elle permet de connaître le stock actuel, d’éviter les pertes ou vols, et de
 3. Installer la dépendance :  
    pip install mysql-connector-python
 
+## Authentification des utilisateurs 
+L’application possède un système d’authentification avec protection des mots de passe.
+## Inscription
+Lors de la création d’un compte :
+l’email est contrôlé pour vérifier que le format est valide ;
+l’adresse est vérifiée pour éviter les doublons dans la base ;
+le rôle accepté est admin ou user ;
+le mot de passe n’est jamais enregistré en clair.
+Avant l’insertion dans la base de données, le mot de passe est transformé en une empreinte numérique grâce au module hashlib.
+La base conserve uniquement cette valeur chiffrée.
+## Connexion
+Au moment de l’identification :
+l’utilisateur saisit son email et son mot de passe ;
+le système applique le même algorithme de hachage sur le mot de passe saisi ;
+le résultat est comparé avec la valeur stockée.
+Si les deux correspondent, l’accès est autorisé et la session démarre.
+Gestion des droits
+Une fois connecté, les options du menu varient selon le rôle :
+admin : opérations de gestion (ajout catégorie, produits, stock) ;
+user : consultation.
+
+## Déconnexion
+Il est possible de fermer la session à tout moment pour revenir au menu d’accueil.
+Sécurité apportée
+Même en cas d’accès à la base, les mots de passe réels ne sont pas visibles, car seule leur empreinte est conservée.
+
 ## Note important
 ### Configuration du port MySQL
 
