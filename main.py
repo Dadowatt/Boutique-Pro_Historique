@@ -1,4 +1,6 @@
 import mysql.connector
+import hashlib
+import re
 
 # Connexion à la base de données
 connexion = mysql.connector.connect(
@@ -153,7 +155,6 @@ def ajouter_mouvement():
                 print("ID produit inexistant, veuillez ressayer")
             except ValueError:
                 print("Veuillez saisir un nombre entier valide pour l'ID")
-                
 
         while True:
             try:
@@ -169,8 +170,7 @@ def ajouter_mouvement():
             type_mouvement = input("Type de mouvement (ENTREE/SORTIE) : ").upper()
             if type_mouvement in ["ENTREE", "SORTIE"]:
                 break
-            print("Type de mouvement invalide ! veuillez ressayer")
-                
+            print("Type de mouvement invalide ! veuillez ressayer")    
 
         # Récupérer le stock actuel
         sql_stock = "SELECT stock FROM produits WHERE id=%s"
@@ -232,38 +232,135 @@ def alerte_stock():
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
 
+#gestion inscription
+def inscrire_utilisateur():
+    try:
+        while True:
+            email = input("Email : ").strip()
+
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                print("Format d'email invalide.")
+                continue
+            break
+
+        while True:
+            password = input("Mot de passe : ").strip()
+            if len(password) < 4:
+                print("Le Mot de passe doit contenir au minimum 4 caractères")
+                continue
+            break
+
+        #hashage du mot de passe
+        hash_password = hashlib.sha256(password.encode()).hexdigest()
+        role = 'user'
+
+        sql = """
+        INSERT INTO utilisateurs (email, mot_de_passe, role)
+        VALUES (%s, %s, %s)
+        """
+        curseur.execute(sql, (email, hash_password, role))
+        connexion.commit()
+
+        print("Utilisateur créé avec succès !")
+    except mysql.connector.IntegrityError:
+        print("Cet email est déjà utilisé.")
+    except mysql.connector.Error as e:
+        print(f"Erreur MySQL : {e}")
+
+#gestion connexion
+def login():
+    try:
+        email = input("email : ").strip()
+        password = input("Mot de pass : ").strip()
+
+        sql = "SELECT * FROM utilisateurs WHERE email=%s"
+        curseur.execute(sql, (email,))
+        user = curseur.fetchone()
+
+        if user:
+            hash_tape = hashlib.sha256(password.encode()).hexdigest()
+        if hash_tape == user['mot_de_passe']:
+                print(f"\nBienvenue {email} !")
+                return user
+        
+        print("Identifiant incorrect\n")
+        return None
+
+    except mysql.connector.Error as e:
+        print(f"Erreur mySQL : {e}")
+        return None
 
 # Menu principal
 while True:
-    print("\n=== Menu Boutique-Pro & Historique ===")
-    print("1. Ajouter une catégorie")
-    print("2. Lister les catégories")
-    print("3. Ajouter un produit")
-    print("4. Lister les produits")
-    print("5. Ajouter ou Retirer stock")
-    print("6. Produits avec stock < 5")
-    print("0. Quitter")
-    
-    choix = input("Saisir votre choix : ")
+    print("\n=== Bienvenue dans Boutique-Pro & Historique ===")
+    print("1. S'inscrire")
+    print("2. Se connecter")
+    print("9. Quitter")
 
-    if choix == "1":
-        ajouter_categorie()
-    elif choix == "2":
-        afficher_categorie()
-    elif choix == "3":
-        ajouter_produit()
-    elif choix == "4":
-        lister_produits()
-    elif choix == "5":
-        ajouter_mouvement()
-    elif choix == "6":
-        alerte_stock()
-    elif choix == "0":
+    choix_init = input("Choisissez une option : ").strip()
+
+    if choix_init == "1":
+        inscrire_utilisateur()
+    elif choix_init == "2":
+        utilisateur_connecte = None
+        while not utilisateur_connecte:
+            utilisateur_connecte = login()
+
+        # affichage du menu adapté après connexion réussie
+        role = utilisateur_connecte['role']
+        email_connecte = utilisateur_connecte['email']
+
+        while True:
+            print(f"\n=== Menu Boutique-Pro & Historique (connecté : {email_connecte}, rôle : {role})")
+            print("2. Lister les catégories")
+            print("4. Lister les produits")
+            print("6. Produits avec stock < 5")
+
+            # Options réservées à l'admin
+            if role == "admin":
+                print("1. Ajouter une catégorie")
+                print("3. Ajouter un produit")
+                print("5. Ajouter ou Retirer stock")
+
+            print("0. Déconnexion")
+            print("9. Quitter le programme")
+
+            choix = input("Saisir votre choix : ").strip()
+
+            if choix == "2":
+                afficher_categorie()
+            elif choix == "4":
+                lister_produits()
+            elif choix == "6":
+                alerte_stock()
+
+            # Options accessibles uniquement à l'admin
+            elif choix == "1" and role == "admin":
+                ajouter_categorie()
+            elif choix == "3" and role == "admin":
+                ajouter_produit()
+            elif choix == "5" and role == "admin":
+                ajouter_mouvement()
+
+            elif choix == "0":
+                print("Déconnexion...\n")
+                break
+
+            elif choix == "9":
+                print("Au revoir !")
+                curseur.close()
+                connexion.close()
+                exit()
+            else:
+                print("Choix invalide, veuillez réessayer.")
+
+    elif choix_init == "9":
         print("Au revoir !")
+        curseur.close()
+        connexion.close()
         break
     else:
-        print("Choix invalide")
+        print("Choix invalide, veuillez réessayer.")
 
-# Fermeture de la connexion
-curseur.close()
-connexion.close()
+
+
