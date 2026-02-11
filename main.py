@@ -1,5 +1,6 @@
 import mysql.connector
 import hashlib
+import getpass
 
 # Connexion à la base de données
 connexion = mysql.connector.connect(
@@ -232,7 +233,7 @@ def connexions():
     try:
         print("\n=== Connexion ===")
         email = input("Entrer votre email : ").strip()
-        mot_de_passe = input("Entrer votre mot de passe : ").strip()
+        mot_de_passe = getpass.getpass("Entrer votre mot de passe : ").strip()
 
         mot_de_passe_hash = hasher_mot_de_passe(mot_de_passe)
 
