@@ -276,7 +276,7 @@ def login():
 
         if user:
             hash_tape = hashlib.sha256(password.encode()).hexdigest()
-        if hash_tape == user['mot_de_passe']:
+            if hash_tape == user['mot_de_passe']:
                 print(f"\nBienvenue {email} !")
                 return user
         
