@@ -242,8 +242,8 @@ def inscrire_utilisateur():
 
         while True:
             password = input("Mot de passe : ").strip()
-            if len(password) < 4:
-                print("Le Mot de passe doit contenir au minimum 4 caractères")
+            if len(password) < 8:
+                print("Le Mot de passe doit contenir au minimum 8 caractères")
                 continue
             break
 
