@@ -45,17 +45,16 @@ def afficher_categorie():
     except mysql.connector.Error as e:
         print(f"Erreur MySQL : {e}")
 
+
 #gestion des produits
 def ajouter_produit():
     try:
+        pattern = r"[A-Za-zÀ-ÖØ-öø-ÿ](?:[A-Za-zÀ-ÖØ-öø-ÿ0-9]*([ '-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)?)*"
         while True:
-            try:
-                designation = input("Saisir le nom du produit : ").strip()
-                if designation.replace(" ", "").isalpha():
-                    break
-                print("Le nom doit contenir uniquement des lettres")
-            except ValueError:
-                print("Veuillez un nom de produit valide")
+            designation = input("Saisir le nom du produit : ").strip()
+            if re.fullmatch(pattern, designation):
+                break
+            print("Nom de produit invalide, veuillez ressayer")
 
         while True:
             try:
