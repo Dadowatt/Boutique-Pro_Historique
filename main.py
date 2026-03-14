@@ -18,7 +18,7 @@ def ajouter_categorie():
     try:
         while True:
             nom_categorie = input("Nom de la catégorie à ajouter : ").lower().strip()
-            if nom_categorie.replace(" ", "").isalpha():
+            if nom_categorie and nom_categorie.replace(" ", "").isalpha():
                 break
             print("Le nom de la catégorie doit contenir uniquement des lettres")
 
@@ -49,7 +49,7 @@ def afficher_categorie():
 #gestion des produits
 def ajouter_produit():
     try:
-        pattern = r"[A-Za-zÀ-ÖØ-öø-ÿ](?:[A-Za-zÀ-ÖØ-öø-ÿ0-9]*([ '-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)?)*"
+        pattern = r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ0-9]*(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*"
         while True:
             designation = input("Saisir le nom du produit : ").strip()
             if re.fullmatch(pattern, designation):
